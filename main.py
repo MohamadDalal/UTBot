@@ -1,23 +1,27 @@
 import discord
 import json
+import argparse
 import asyncio
 #from discord import app_commands
 from discord.ext import commands
-from bot_commands import SlashCommandsCog
+#from bot_commands import SlashCommandsCog
 from roleMessage import roleMessage
 
 
 class MyBot(commands.Bot):
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, testbot, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.isTest = testbot
         self.testGuild = discord.Object(id=1056227226338734201)
         self.reactionMessages = {}
-        with open("test_reactionMessages.json", "r") as f:
+        self.reactionMessagesPath = "test_reactionMessages.json" if testbot else "reactionMessages.json"
+        print(f"Is this the test bot?: {testbot}")
+        with open(self.reactionMessagesPath, "r") as f:
             self.reactionMessages = json.load(f)
 
     def save_reactionMessage(self):
-        with open("test_reactionMessages.json", "w") as f:
+        with open(self.reactionMessagesPath, "w") as f:
             json.dump(self.reactionMessages, f)
 
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
@@ -113,26 +117,32 @@ class MyBot(commands.Bot):
         print(f'Logged in as {self.user.name} with id {self.application_id}')
 
     async def setup_hook(self) -> None:
-        await self.add_cog(SlashCommandsCog(bot), guild=self.testGuild)
+        #await self.add_cog(SlashCommandsCog(bot), guild=self.testGuild)
         await self.add_cog(roleMessage(bot), guild=self.testGuild)
-        self.tree.copy_global_to(guild=self.testGuild)
-        await self.tree.sync(guild=self.testGuild)
-        #await self.tree.sync()
+        if self.isTest:
+            self.tree.copy_global_to(guild=self.testGuild)
+            await self.tree.sync(guild=self.testGuild)
+        else:
+            await self.tree.sync()
 
 
 #async def setup(bot: commands.Bot) -> None:
     #await bot.add_cog(SlashCommandsCog(bot))
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--use-main-bot", action="store_true", help="Only add if you want to run the main bot")
+    args = parser.parse_args()
     settings = {}
-    with open("settings.json", "r") as f:
+    settingsPath = "settings.json" if args.use_main_bot else "tester_settings.json"
+    with open(settingsPath, "r") as f:
         settings = json.load(f)
     print(getattr(discord.User, '__origin__', None))
     intents = discord.Intents.default()
     intents.messages = True
     intents.guilds = True
     intents.members = True
-    bot = MyBot(command_prefix='!', intents=intents)
+    bot = MyBot(not args.use_main_bot, command_prefix='!', intents=intents)
     #asyncio.run(setup(bot))
     #bot.add_cog(SlashCommandsCog(bot))
     #print(bot.cogs)
