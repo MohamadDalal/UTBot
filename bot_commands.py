@@ -15,7 +15,7 @@ class SlashCommandsCog(commands.Cog):
     @commands.check(check_echo)
     async def echo(self, interaction: discord.Interaction, message: str):
         await interaction.response.send_message(message)
-
+    """
     @app_commands.command(description="Adds two numbers")
     async def add(self, interaction: discord.Interaction, first_value: float, second_value: float):
         result = first_value + second_value
@@ -74,3 +74,4 @@ class SlashCommandsCog(commands.Cog):
         print(message)
         await message.remove_reaction(reaction, interaction.guild.get_member(self.bot.application_id))
         await interaction.response.send_message(f"Removed reaction {reaction} from {message_url}", ephemeral=True)
+    """

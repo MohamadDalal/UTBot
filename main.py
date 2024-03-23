@@ -4,7 +4,7 @@ import argparse
 import asyncio
 #from discord import app_commands
 from discord.ext import commands
-#from bot_commands import SlashCommandsCog
+from bot_commands import SlashCommandsCog
 from roleMessage import roleMessage
 
 
@@ -13,7 +13,7 @@ class MyBot(commands.Bot):
     def __init__(self, testbot, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.isTest = testbot
-        self.testGuild = discord.Object(id=1056227226338734201)
+        self.testGuilds = (discord.Object(id=1056227226338734201),)
         self.reactionMessages = {}
         self.reactionMessagesPath = "test_reactionMessages.json" if testbot else "reactionMessages.json"
         print(f"Is this the test bot?: {testbot}")
@@ -22,21 +22,23 @@ class MyBot(commands.Bot):
 
     def save_reactionMessage(self):
         with open(self.reactionMessagesPath, "w") as f:
-            json.dump(self.reactionMessages, f)
+            json.dump(self.reactionMessages, f, indent=2)
 
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
 
         if payload.user_id == self.application_id:
             return
 
-        # Make sure that the message the user is reacting to is an event message.
-        eventDict = self.reactionMessages.get(str(payload.message_id), None)
-        if eventDict is None:
-            return
-        
+        # Make sure the server we read the message from is registered under the rection messages dictionary
         guild = self.get_guild(payload.guild_id)
-        if guild is None:
-            # Check if we're still in the guild and it's cached.
+        guildReactionMessages = self.reactionMessages.get(str(payload.guild_id), None)
+        if guildReactionMessages is None or guild is None:
+            # Also checks if we're still in the guild and it's cached.
+            return
+
+        # Make sure that the message the user is reacting to is an event message.
+        eventDict = guildReactionMessages.get(str(payload.message_id), None)
+        if eventDict is None:
             return
         
         print(payload.emoji)
@@ -61,6 +63,8 @@ class MyBot(commands.Bot):
                 # If we want to do something in case of errors we'd do it here.
                 print("HTTP exception in reaction add callback")
                 print(e)
+                # Add a functionality where it pastes the error and its possible solution in a dedicated bot error channel
+                # Will also need a command to assign a channel as dedicated bot error channel.
                 pass
 
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
@@ -68,14 +72,16 @@ class MyBot(commands.Bot):
         if payload.user_id == self.application_id:
             return
         
-        # Make sure that the message the user is reacting to is an event message.
-        eventDict = self.reactionMessages.get(str(payload.message_id), None)
-        if eventDict is None:
+        # Make sure the server we read the message from is registered under the rection messages dictionary
+        guild = self.get_guild(payload.guild_id)
+        guildReactionMessages = self.reactionMessages.get(str(payload.guild_id), None)
+        if guildReactionMessages is None or guild is None:
+            # Also checks if we're still in the guild and it's cached.
             return
         
-        guild = self.get_guild(payload.guild_id)
-        if guild is None:
-            # Check if we're still in the guild and it's cached.
+        # Make sure that the message the user is reacting to is an event message.
+        eventDict = guildReactionMessages.get(str(payload.message_id), None)
+        if eventDict is None:
             return
 
         print(payload.emoji)
@@ -117,12 +123,17 @@ class MyBot(commands.Bot):
         print(f'Logged in as {self.user.name} with id {self.application_id}')
 
     async def setup_hook(self) -> None:
-        #await self.add_cog(SlashCommandsCog(bot), guild=self.testGuild)
-        await self.add_cog(roleMessage(bot), guild=self.testGuild)
         if self.isTest:
-            self.tree.copy_global_to(guild=self.testGuild)
-            await self.tree.sync(guild=self.testGuild)
+            await self.add_cog(SlashCommandsCog(bot), guilds=self.testGuilds)
+            await self.add_cog(roleMessage(bot), guilds=self.testGuilds)
+            for TG in self.testGuilds:
+                self.tree.copy_global_to(guild=TG)
+                await self.tree.sync(guild=TG)
+            #await self.add_cog(SlashCommandsCog(bot))
+            #await self.add_cog(roleMessage(bot))
+            #await self.tree.sync()
         else:
+            await self.add_cog(roleMessage(bot))
             await self.tree.sync()
 
 
