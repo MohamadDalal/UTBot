@@ -10,6 +10,27 @@ class SlashCommandsCog(commands.Cog):
         print("Check works")
         return False
 
+    @app_commands.command(description="Sends a message in the current channel")
+    #@commands.has_permissions(administrator=True)
+    @commands.check(check_echo)
+    async def send_message(self, interaction: discord.Interaction, message: str):
+        print(f"Hello from send-message, {message}")
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(f"Cannot echo. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            return
+        try:
+            channel = interaction.channel
+            await channel.send(message)
+            await interaction.response.send_message("Sent message", ephemeral=True)
+        except discord.errors.Forbidden as e:
+            print(e)
+            await interaction.response.send_message(f"I have no access to this channel", ephemeral=True)
+        except Exception as e:
+            #print(e)
+            await interaction.response.send_message(f"Some other error happened. Check error logs.", ephemeral=True)
+            raise e
+
+    """
     @app_commands.command(description="Repeats what you say")
     #@commands.has_permissions(administrator=True)
     @commands.check(check_echo)
@@ -19,7 +40,6 @@ class SlashCommandsCog(commands.Cog):
             await interaction.response.send_message(f"Cannot echo. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         await interaction.response.send_message(message)
-    """
     @app_commands.command(description="Adds two numbers")
     async def add(self, interaction: discord.Interaction, first_value: float, second_value: float):
         result = first_value + second_value
