@@ -14,6 +14,10 @@ class SlashCommandsCog(commands.Cog):
     #@commands.has_permissions(administrator=True)
     @commands.check(check_echo)
     async def echo(self, interaction: discord.Interaction, message: str):
+        print(f"Hello from echo")
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(f"Cannot echo. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            return
         await interaction.response.send_message(message)
     """
     @app_commands.command(description="Adds two numbers")

@@ -67,7 +67,7 @@ class roleMessage(commands.GroupCog, name="roles"):
         #    await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
         if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
         print(urlElements)
@@ -111,7 +111,7 @@ class roleMessage(commands.GroupCog, name="roles"):
         #    await interaction.response.send_message(f"Cannot add role to a role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
         if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            await interaction.response.send_message(f"Cannot add role to role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
         print(urlElements)
@@ -156,7 +156,7 @@ class roleMessage(commands.GroupCog, name="roles"):
         #    await interaction.response.send_message(f"Cannot remove role reaction as role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
         if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            await interaction.response.send_message(f"Cannot remove role reaction as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
         print(urlElements)
@@ -202,7 +202,7 @@ class roleMessage(commands.GroupCog, name="roles"):
         #    await interaction.response.send_message(f"Cannot list role reaction messages. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
         if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            await interaction.response.send_message(f"Cannot list role reaction messages. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
             await interaction.response.send_message(f"Current server does not have any messages assigned as a reaction message. Please use /roles assign-message first.", ephemeral=True)
@@ -228,7 +228,7 @@ class roleMessage(commands.GroupCog, name="roles"):
         #    await interaction.response.send_message(f"Cannot list role reaction messages. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
         if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            await interaction.response.send_message(f"Cannot display role reactions on {message_url}. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
         print(urlElements)

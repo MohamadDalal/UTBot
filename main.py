@@ -133,6 +133,7 @@ class MyBot(commands.Bot):
             #await self.add_cog(roleMessage(bot))
             #await self.tree.sync()
         else:
+            await self.add_cog(SlashCommandsCog(bot))
             await self.add_cog(roleMessage(bot))
             await self.tree.sync()
 
