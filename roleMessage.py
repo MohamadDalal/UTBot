@@ -7,6 +7,12 @@ class roleMessage(commands.GroupCog, name="roles"):
         self.bot = bot
         super().__init__()  # this is now required for GroupCog.
     
+    def _printDecodedURL(self, originGuild, urlGuild, channel, message):
+        print(f"Origin guild:\t{originGuild}")
+        print(f"Message guild:\t{urlGuild}")
+        print(f"Message channel:\t{channel}")
+        print(f"Message:\t\t{message}")
+    
     @app_commands.command(name="assign-message", description="Assign a message as role picker message")
     @app_commands.describe(message_url="The link to the message")
     #@commands.has_guild_permissions(manage_roles=True, ban_members=True, administrator=True) # Check not working
@@ -26,13 +32,8 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            #print(interaction.guild_id, urlElements[-3])
-            #print(interactionGuild == interaction.guild)
-            #print(interactionGuild == urlGuild)
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
+            self._printDecodedURL(interaction.guild, urlGuild, channel, message)
+            
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot assign a message from another server", ephemeral=True)
             elif str(message.id) in self.bot.reactionMessages.get(str(interaction.guild_id), {}).keys():
@@ -59,15 +60,19 @@ class roleMessage(commands.GroupCog, name="roles"):
     #        text = "Sorry {}, you do not have permissions to do that!".format(interaction.message.author)
     #        await interaction.response(text, ephemeral=True)
 
-    @app_commands.command(name="unassign-message", description="Remove assignment a message as role picker message. THIS CANNOT BE UNDONE")
+    @app_commands.command(name="unassign-message", description="Remove assignment a message as role picker message. THIS CANNOT BE UNDONE! ASSIGNED ROLE REACTION CANNOT BE RESTORED!!!")
     @app_commands.describe(message_url="The link to the message")
-    async def unassign_message(self, interaction: discord.Interaction, message_url:str) -> None:
-        print(f"Hello from unassign-message, {message_url}")
+    @app_commands.describe(confirm="Choose True to confirm your choice. Here to avoid accidents")
+    async def unassign_message(self, interaction: discord.Interaction, message_url:str, confirm:bool) -> None:
+        print(f"Hello from unassign-message, {message_url}, {confirm}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
+            return
+        elif not confirm:
+            await interaction.response.send_message(f"The confirm option was not set to true. Are you sure you wanted to unassign message fomr being a role message?")
             return
         urlElements = message_url.split("/")
         print("Extracted URL elements: ", urlElements)
@@ -75,10 +80,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
+            self._printDecodedURL(interaction.guild, urlGuild, channel, message)
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot unassign a message from another server", ephemeral=True)
             elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
@@ -120,11 +122,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            message.jump_url
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
+            self._printDecodedURL(interaction.guild, urlGuild, channel, message)
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot add a role reaction to a message from another server", ephemeral=True)
             elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
@@ -165,10 +163,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
+            self._printDecodedURL(interaction.guild, urlGuild, channel, message)
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot remove role reaction from a message not in this server", ephemeral=True)
             elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
@@ -236,10 +231,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
+            self._printDecodedURL(interaction.guild, urlGuild, channel, message)
             if str(interaction.guild_id) not in self.bot.reactionMessages.keys():
                 await interaction.response.send_message(f"Current server does not have any messages assigned as a reaction message. Please use /roles assign-message first.", ephemeral=True)
                 return
