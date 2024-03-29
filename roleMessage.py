@@ -20,7 +20,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
-        print(urlElements)
+        print("Extracted URL elements: ", urlElements)
         #message = interaction.channel.fetch_message(int(message_id))
         try:
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
@@ -70,7 +70,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
-        print(urlElements)
+        print("Extracted URL elements: ", urlElements)
         try:
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
@@ -114,7 +114,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             await interaction.response.send_message(f"Cannot add role to role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
-        print(urlElements)
+        print("Extracted URL elements: ", urlElements)
         #message = interaction.channel.fetch_message(int(message_id))
         try:
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
@@ -159,7 +159,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             await interaction.response.send_message(f"Cannot remove role reaction as role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
-        print(urlElements)
+        print("Extracted URL elements: ", urlElements)
         #message = interaction.channel.fetch_message(int(message_id))
         try:
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
@@ -223,7 +223,7 @@ class roleMessage(commands.GroupCog, name="roles"):
 
     @app_commands.command(name="list-roles", description="List all messages assigned as role reaction messages in this server")
     async def list_roles(self, interaction: discord.Interaction, message_url:str) -> None:
-        print(f"Hello from list-messages, {message_url}")
+        print(f"Hello from list-roles, {message_url}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot list role reaction messages. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
@@ -231,7 +231,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             await interaction.response.send_message(f"Cannot display role reactions on {message_url}. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         urlElements = message_url.split("/")
-        print(urlElements)
+        print("Extracted URL elements: ", urlElements)
         try:
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])

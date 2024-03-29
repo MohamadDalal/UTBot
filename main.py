@@ -2,10 +2,12 @@ import discord
 import json
 import argparse
 import asyncio
+import sys
 #from discord import app_commands
 from discord.ext import commands
 from bot_commands import SlashCommandsCog
 from roleMessage import roleMessage
+from logger import Logger
 
 
 class MyBot(commands.Bot):
@@ -149,6 +151,14 @@ if __name__ == "__main__":
     settingsPath = "settings.json" if args.use_main_bot else "tester_settings.json"
     with open(settingsPath, "r") as f:
         settings = json.load(f)
+    # Configure logging
+    logger = Logger(settings["LogPath"])
+    sys.stdout = logger
+    sys.stderr = logger
+    print()
+    print("----------------------------New Session----------------------------")
+    logger.setPrintDateTime(True)
+    
     print(getattr(discord.User, '__origin__', None))
     intents = discord.Intents.default()
     intents.messages = True
