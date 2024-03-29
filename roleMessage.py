@@ -29,14 +29,14 @@ class roleMessage(commands.GroupCog, name="roles"):
             #print(interaction.guild_id, urlElements[-3])
             #print(interactionGuild == interaction.guild)
             #print(interactionGuild == urlGuild)
-            print("Origin guild:\t\t", interaction.guild)
-            print("Message guild:\t\t", urlGuild)
-            print("Message channel:\t", channel)
-            print("Message:\t\t", message)
+            print(f"Origin guild:\t{interaction.guild}")
+            print(f"Message guild:\t{urlGuild}")
+            print(f"Message channel:\t{channel}")
+            print(f"Message:\t\t{message}")
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot assign a message from another server", ephemeral=True)
             elif str(message.id) in self.bot.reactionMessages.get(str(interaction.guild_id), {}).keys():
-                await interaction.response.send_message(f"Message {message_url} already assigned as a reaction message of type {self.bot.reactionMessages[str(message.id)]['Type']}.", ephemeral=True)
+                await interaction.response.send_message(f"Message {message_url} already assigned as a reaction message of type {self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]['Type']}.", ephemeral=True)
             else:
                 if self.bot.reactionMessages.get(str(interaction.guild_id), None) is None:
                     self.bot.reactionMessages[str(interaction.guild_id)] = {}
@@ -75,10 +75,10 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            print("Origin guild:\t\t", interaction.guild)
-            print("Message guild:\t\t", urlGuild)
-            print("Message channel:\t", channel)
-            print("Message:\t\t", message)
+            print(f"Origin guild:\t{interaction.guild}")
+            print(f"Message guild:\t{urlGuild}")
+            print(f"Message channel:\t{channel}")
+            print(f"Message:\t\t{message}")
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot unassign a message from another server", ephemeral=True)
             elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
@@ -86,7 +86,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             elif str(message.id) not in self.bot.reactionMessages[str(interaction.guild_id)].keys():
                 await interaction.response.send_message(f"Message {message_url} is not assigned as a reaction message.", ephemeral=True)
             elif self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Type"] != "Role Message":
-                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(message.id)]['Type']}. You need to unassign it using its respective command.", ephemeral=True)
+                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]['Type']}. You need to unassign it using its respective command.", ephemeral=True)
             else:
                 del self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]
                 self.bot.save_reactionMessage()
@@ -121,10 +121,10 @@ class roleMessage(commands.GroupCog, name="roles"):
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
             message.jump_url
-            print("Origin guild:\t\t", interaction.guild)
-            print("Message guild:\t\t", urlGuild)
-            print("Message channel:\t", channel)
-            print("Message:\t\t", message)
+            print(f"Origin guild:\t{interaction.guild}")
+            print(f"Message guild:\t{urlGuild}")
+            print(f"Message channel:\t{channel}")
+            print(f"Message:\t\t{message}")
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot add a role reaction to a message from another server", ephemeral=True)
             elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
@@ -132,7 +132,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             elif str(message.id) not in self.bot.reactionMessages[str(interaction.guild_id)].keys():
                 await interaction.response.send_message(f"Message {message_url} is not assigned as a reaction message. Please use /roles assign-message first.", ephemeral=True)
             elif self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Type"] != "Role Message":
-                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(message.id)]['Type']}. You need to unassign at and then reassign it as a role message.", ephemeral=True)
+                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]['Type']}. You need to unassign at and then reassign it as a role message.", ephemeral=True)
             else:
                 # Check if role_ID is made of numbers only (Valid role ID) later
                 self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Roles"][reaction] = role_id
@@ -165,10 +165,10 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            print("Origin guild:\t\t", interaction.guild)
-            print("Message guild:\t\t", urlGuild)
-            print("Message channel:\t", channel)
-            print("Message:\t\t", message)
+            print(f"Origin guild:\t{interaction.guild}")
+            print(f"Message guild:\t{urlGuild}")
+            print(f"Message channel:\t{channel}")
+            print(f"Message:\t\t{message}")
             if interaction.guild != urlGuild:
                 await interaction.response.send_message(f"Cannot remove role reaction from a message not in this server", ephemeral=True)
             elif str(interaction.guild_id) not in self.bot.reactionMessages.keys():
@@ -176,7 +176,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             elif str(message.id) not in self.bot.reactionMessages[str(interaction.guild_id)].keys():
                 await interaction.response.send_message(f"Message {message_url} is not assigned as a reaction message. Use assign-message command first.", ephemeral=True)
             elif self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Type"] != "Role Message":
-                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(message.id)]['Type']}. You need to unassign at and then reassign it as a role message.", ephemeral=True)
+                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]['Type']}. You need to unassign at and then reassign it as a role message.", ephemeral=True)
             elif reaction not in self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Roles"].keys():
                 await interaction.response.send_message(f"Message {message_url} doesn't have {reaction} assigned to any roles.", ephemeral=True)
             else:
@@ -236,17 +236,17 @@ class roleMessage(commands.GroupCog, name="roles"):
             urlGuild = self.bot.get_guild(int(urlElements[-3]))
             channel = self.bot.get_partial_messageable(urlElements[-2])
             message = await channel.fetch_message(urlElements[-1])
-            print("Origin guild:\t\t", interaction.guild)
-            print("Message guild:\t\t", urlGuild)
-            print("Message channel:\t", channel)
-            print("Message:\t\t", message)
+            print(f"Origin guild:\t{interaction.guild}")
+            print(f"Message guild:\t{urlGuild}")
+            print(f"Message channel:\t{channel}")
+            print(f"Message:\t\t{message}")
             if str(interaction.guild_id) not in self.bot.reactionMessages.keys():
                 await interaction.response.send_message(f"Current server does not have any messages assigned as a reaction message. Please use /roles assign-message first.", ephemeral=True)
                 return
             elif str(message.id) not in self.bot.reactionMessages[str(interaction.guild_id)].keys():
                 await interaction.response.send_message(f"Message {message_url} is not assigned as a reaction message.", ephemeral=True)
             elif self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Type"] != "Role Message":
-                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(message.id)]['Type']} and not as a Role Message.", ephemeral=True)
+                await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]['Type']} and not as a Role Message.", ephemeral=True)
             else:
                 rolesInMessage = self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Roles"]
                 if len(rolesInMessage.keys()) == 0:

@@ -9,7 +9,7 @@ class Logger(object):
         self.printDateTime = printDateTime
    
     def write(self, message):
-        if self.printDateTime and message != "\n":
+        if self.printDateTime and message != "\n" and message != "\t":
             # Source https://www.programiz.com/python-programming/datetime/current-datetime
             # Added a bunch of hardcoded checks of my own
             # datetime object containing current date and time
