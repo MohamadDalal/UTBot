@@ -5,8 +5,9 @@ import asyncio
 import sys
 #from discord import app_commands
 from discord.ext import commands
-from bot_commands import SlashCommandsCog
+#from bot_commands import SlashCommandsCog
 from roleMessage import roleMessage
+from messageCog import messageCog
 from logger import Logger
 
 
@@ -126,8 +127,9 @@ class MyBot(commands.Bot):
 
     async def setup_hook(self) -> None:
         if self.isTest:
-            await self.add_cog(SlashCommandsCog(bot), guilds=self.testGuilds)
-            await self.add_cog(roleMessage(bot), guilds=self.testGuilds)
+            #await self.add_cog(SlashCommandsCog(bot), guilds=self.testGuilds)
+            await self.add_cog(roleMessage(bot=self), guilds=self.testGuilds)
+            await self.add_cog(messageCog(bot=self), guilds=self.testGuilds)
             for TG in self.testGuilds:
                 self.tree.copy_global_to(guild=TG)
                 await self.tree.sync(guild=TG)
@@ -135,8 +137,9 @@ class MyBot(commands.Bot):
             #await self.add_cog(roleMessage(bot))
             #await self.tree.sync()
         else:
-            await self.add_cog(SlashCommandsCog(bot))
-            await self.add_cog(roleMessage(bot))
+            #await self.add_cog(SlashCommandsCog(bot))
+            await self.add_cog(roleMessage(bot=self))
+            await self.add_cog(messageCog(bot=self))
             await self.tree.sync()
 
 

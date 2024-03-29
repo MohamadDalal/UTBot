@@ -60,10 +60,10 @@ class roleMessage(commands.GroupCog, name="roles"):
     #        text = "Sorry {}, you do not have permissions to do that!".format(interaction.message.author)
     #        await interaction.response(text, ephemeral=True)
 
-    @app_commands.command(name="unassign-message", description="Remove assignment a message as role picker message. THIS CANNOT BE UNDONE! ASSIGNED ROLE REACTION CANNOT BE RESTORED!!!")
+    @app_commands.command(name="unassign-message", description="Remove assignment a message as role picker message. ASSIGNED ROLE REACTIONS CANNOT BE RESTORED!!!")
     @app_commands.describe(message_url="The link to the message")
     @app_commands.describe(confirm="Choose True to confirm your choice. Here to avoid accidents")
-    async def unassign_message(self, interaction: discord.Interaction, message_url:str, confirm:bool) -> None:
+    async def unassign_message(self, interaction: discord.Interaction, message_url:str, confirm:bool = False) -> None:
         print(f"Hello from unassign-message, {message_url}, {confirm}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
