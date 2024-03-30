@@ -53,6 +53,7 @@ class MyBot(commands.Bot):
         if eventDict is None:
             return
         
+        print("Hello from raw reaction add")
         print(payload.emoji)
 
         if eventDict["Type"] == "Role Message":
@@ -96,6 +97,7 @@ class MyBot(commands.Bot):
         if eventDict is None:
             return
 
+        print("Hello from raw reaction remove")
         print(payload.emoji)
 
         if eventDict["Type"] == "Role Message":
@@ -172,7 +174,7 @@ class MyBot(commands.Bot):
             #await self.add_cog(SlashCommandsCog(bot))
             await self.add_cog(roleMessage(bot=self))
             await self.add_cog(messageCog(bot=self))
-            await self.add_cog(welcomeCog(bot=self))
+            #await self.add_cog(welcomeCog(bot=self))
             await self.tree.sync()
 
 
