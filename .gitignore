@@ -4,4 +4,5 @@ __pycache__
 settings.json
 tester_settings.json
 reactionMessages.json
+welcomeSettings.json
 *.log

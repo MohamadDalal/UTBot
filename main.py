@@ -8,6 +8,7 @@ from discord.ext import commands
 #from bot_commands import SlashCommandsCog
 from roleMessage import roleMessage
 from messageCog import messageCog
+from welcomeCog import welcomeCog
 from logger import Logger
 
 
@@ -16,16 +17,24 @@ class MyBot(commands.Bot):
     def __init__(self, testbot, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.isTest = testbot
-        self.testGuilds = (discord.Object(id=1056227226338734201),)
+        self.testGuilds = (discord.Object(id=1056227226338734201),discord.Object(id=1223451123591942174),)
         self.reactionMessages = {}
         self.reactionMessagesPath = "test_reactionMessages.json" if testbot else "reactionMessages.json"
+        self.welcomeSettings = {}
+        self.welcomeSettingsPath = "test_welcomeSettings.json" if testbot else "welcomeSettings.json"
         print(f"Is this the test bot?: {testbot}")
         with open(self.reactionMessagesPath, "r") as f:
             self.reactionMessages = json.load(f)
+        with open(self.welcomeSettingsPath, "r") as f:
+            self.welcomeSettings = json.load(f)
 
     def save_reactionMessage(self):
         with open(self.reactionMessagesPath, "w") as f:
             json.dump(self.reactionMessages, f, indent=2)
+    
+    def save_welcomeSettings(self):
+        with open(self.welcomeSettingsPath, "w") as f:
+            json.dump(self.welcomeSettings, f, indent=2)
 
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
 
@@ -120,6 +129,28 @@ class MyBot(commands.Bot):
                 print(e)
                 pass
 
+    async def on_member_join(self, member:discord.Member):
+        # Make sure the server we read the message from is registered under the rection messages dictionary
+        guild = member.guild
+        guildWelcomeSettings = self.welcomeSettings.get(str(guild.id), None)
+        if guildWelcomeSettings is None or guild is None:
+            # Also checks if we're still in the guild and it's cached.
+            return
+        if guildWelcomeSettings["Enabled"]:
+            overwrites = {
+                guild.default_role: discord.PermissionOverwrite(read_messages=False, view_channel=False, send_messages=False),
+                member: discord.PermissionOverwrite(read_messages=True, read_message_history=True, view_channel=True, send_messages=True),
+                guild.me: discord.PermissionOverwrite(read_messages=True, read_message_history=True, view_channel=True, send_messages=True)
+            }
+            createdChannel = await guild.create_text_channel(f"welcome-{member.name}", overwrites=overwrites,
+                                                             category=guild.get_channel(int(guildWelcomeSettings["Category"])), 
+                                                             reason=f"Welcome channel for {member.name}")
+            message = f"Hello <@{member.id}>\n\n{guildWelcomeSettings['Message']}"
+            await createdChannel.send(message)
+        else:
+            return
+
+
     async def on_ready(self):
         #await self.tree.sync()
         print(self.cogs)
@@ -130,6 +161,7 @@ class MyBot(commands.Bot):
             #await self.add_cog(SlashCommandsCog(bot), guilds=self.testGuilds)
             await self.add_cog(roleMessage(bot=self), guilds=self.testGuilds)
             await self.add_cog(messageCog(bot=self), guilds=self.testGuilds)
+            await self.add_cog(welcomeCog(bot=self), guilds=self.testGuilds)
             for TG in self.testGuilds:
                 self.tree.copy_global_to(guild=TG)
                 await self.tree.sync(guild=TG)
@@ -140,6 +172,7 @@ class MyBot(commands.Bot):
             #await self.add_cog(SlashCommandsCog(bot))
             await self.add_cog(roleMessage(bot=self))
             await self.add_cog(messageCog(bot=self))
+            await self.add_cog(welcomeCog(bot=self))
             await self.tree.sync()
 
 
