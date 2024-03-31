@@ -72,7 +72,7 @@ class roleMessage(commands.GroupCog, name="roles"):
             await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
         elif not confirm:
-            await interaction.response.send_message(f"The confirm option was not set to true. Are you sure you wanted to unassign message fomr being a role message?")
+            await interaction.response.send_message(f"The confirm option was not set to true. Are you sure you wanted to unassign message from being a role message?", ephemeral=True)
             return
         urlElements = message_url.split("/")
         print("Extracted URL elements: ", urlElements)
