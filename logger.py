@@ -1,7 +1,7 @@
 import sys
 from datetime import datetime
 
-class Logger(object):
+class Logger:
     # Source https://stackoverflow.com/a/14906787
     def __init__(self, logPath, printDateTime = False):
         self.terminal = sys.stdout

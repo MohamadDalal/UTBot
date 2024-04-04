@@ -11,6 +11,17 @@ from messageCog import messageCog
 from welcomeCog import welcomeCog
 from logger import Logger
 
+"""
+    Needed permissions:
+    - Manage Roles
+    - Read Messages/View Channels
+    - Send Messages
+    - Manage Sessions
+    - Read Message History
+    - Use External Emojis
+    - Add Reactions
+"""
+
 
 class MyBot(commands.Bot):
     
@@ -54,21 +65,27 @@ class MyBot(commands.Bot):
             return
         
         print("Hello from raw reaction add")
-        print(payload.emoji)
+        print(f"Reaction:\t{payload.emoji}")
 
         if eventDict["Type"] == "Role Message":
             try:
                 role_id = eventDict["Roles"][str(payload.emoji)]
             except KeyError:
+                channel = self.get_partial_messageable(eventDict["Channel"])
+                message = await channel.fetch_message(payload.message_id)
+                print(f"User {payload.member} reacted with {payload.emoji}, which is not a role reaction.")
+                print("Removing reaction")
+                await message.remove_reaction(payload.emoji, payload.member)
                 # If the emoji isn't the one we care about then exit as well.
                 return
-            print(role_id)
+            print(f"Role ID:\t{role_id}")
             role = guild.get_role(int(role_id))
-            print(role)
+            print(f"Role:\t{role}")
             if role is None:
                 # Make sure the role still exists and is valid.
                 return
-
+            print(f"User ID:\t{payload.user_id}")
+            print(f"Username:\t{payload.member}")
             try:
                 # Finally, add the role.
                 await payload.member.add_roles(role)
@@ -76,6 +93,7 @@ class MyBot(commands.Bot):
                 # If we want to do something in case of errors we'd do it here.
                 print("HTTP exception in reaction add callback")
                 print(e)
+                #raise e
                 # Add a functionality where it pastes the error and its possible solution in a dedicated bot error channel
                 # Will also need a command to assign a channel as dedicated bot error channel.
                 pass
@@ -98,7 +116,7 @@ class MyBot(commands.Bot):
             return
 
         print("Hello from raw reaction remove")
-        print(payload.emoji)
+        print(f"Reaction:\t{payload.emoji}")
 
         if eventDict["Type"] == "Role Message":
             try:
@@ -106,18 +124,18 @@ class MyBot(commands.Bot):
             except KeyError:
                 # If the emoji isn't the one we care about then exit as well.
                 return
-            print(role_id)
+            print(f"Role ID:\t{role_id}")
             role = guild.get_role(int(role_id))
-            print(role)
+            print(f"Role:\t{role}")
             if role is None:
                 # Make sure the role still exists and is valid.
                 return
 
             # The payload for `on_raw_reaction_remove` does not provide `.member`
             # so we must get the member ourselves from the payload's `.user_id`.
-            print(payload.user_id)
+            print(f"User ID:\t{payload.user_id}")
             member = guild.get_member(payload.user_id)
-            print(member)
+            print(f"Username:\t{member}")
             if member is None:
                 # Make sure the member still exists and is valid.
                 return
