@@ -9,6 +9,7 @@ from discord.ext import commands
 from roleMessage import roleMessage
 from messageCog import messageCog
 from welcomeCog import welcomeCog
+from gameAntiCaptcha import antiCaptchaCog
 from logger import Logger
 
 """
@@ -182,6 +183,7 @@ class MyBot(commands.Bot):
             await self.add_cog(roleMessage(bot=self), guilds=self.testGuilds)
             await self.add_cog(messageCog(bot=self), guilds=self.testGuilds)
             await self.add_cog(welcomeCog(bot=self), guilds=self.testGuilds)
+            await self.add_cog(antiCaptchaCog(bot=self), guilds=self.testGuilds)
             for TG in self.testGuilds:
                 self.tree.copy_global_to(guild=TG)
                 await self.tree.sync(guild=TG)
@@ -193,6 +195,7 @@ class MyBot(commands.Bot):
             await self.add_cog(roleMessage(bot=self))
             await self.add_cog(messageCog(bot=self))
             #await self.add_cog(welcomeCog(bot=self))
+            await self.add_cog(antiCaptchaCog(bot=self))
             await self.tree.sync()
 
 
