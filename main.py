@@ -4,7 +4,8 @@ import argparse
 import asyncio
 import sys
 #from discord import app_commands
-from discord.ext import commands
+#from discord.ext import commands
+from botFunctions import MyBotFunctions
 #from bot_commands import SlashCommandsCog
 from roleMessage import roleMessage
 from messageCog import messageCog
@@ -23,7 +24,7 @@ from logger import Logger
 """
 
 
-class MyBot(commands.Bot):
+class MyBot(MyBotFunctions):
     
     def __init__(self, testbot, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,138 +39,6 @@ class MyBot(commands.Bot):
             self.reactionMessages = json.load(f)
         with open(self.welcomeSettingsPath, "r") as f:
             self.welcomeSettings = json.load(f)
-
-    def save_reactionMessage(self):
-        with open(self.reactionMessagesPath, "w") as f:
-            json.dump(self.reactionMessages, f, indent=2)
-    
-    def save_welcomeSettings(self):
-        with open(self.welcomeSettingsPath, "w") as f:
-            json.dump(self.welcomeSettings, f, indent=2)
-
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
-
-        if payload.user_id == self.application_id:
-            return
-
-        # Make sure the server we read the message from is registered under the rection messages dictionary
-        guild = self.get_guild(payload.guild_id)
-        guildReactionMessages = self.reactionMessages.get(str(payload.guild_id), None)
-        if guildReactionMessages is None or guild is None:
-            # Also checks if we're still in the guild and it's cached.
-            return
-
-        # Make sure that the message the user is reacting to is an event message.
-        eventDict = guildReactionMessages.get(str(payload.message_id), None)
-        if eventDict is None:
-            return
-        
-        print("Hello from raw reaction add")
-        print(f"Reaction:\t{payload.emoji}")
-
-        if eventDict["Type"] == "Role Message":
-            try:
-                role_id = eventDict["Roles"][str(payload.emoji)]
-            except KeyError:
-                channel = self.get_partial_messageable(eventDict["Channel"])
-                message = await channel.fetch_message(payload.message_id)
-                print(f"User {payload.member} reacted with {payload.emoji}, which is not a role reaction.")
-                print("Removing reaction")
-                await message.remove_reaction(payload.emoji, payload.member)
-                # If the emoji isn't the one we care about then exit as well.
-                return
-            print(f"Role ID:\t{role_id}")
-            role = guild.get_role(int(role_id))
-            print(f"Role:\t{role}")
-            if role is None:
-                # Make sure the role still exists and is valid.
-                return
-            print(f"User ID:\t{payload.user_id}")
-            print(f"Username:\t{payload.member}")
-            try:
-                # Finally, add the role.
-                await payload.member.add_roles(role)
-            except discord.HTTPException as e:
-                # If we want to do something in case of errors we'd do it here.
-                print("HTTP exception in reaction add callback")
-                print(e)
-                #raise e
-                # Add a functionality where it pastes the error and its possible solution in a dedicated bot error channel
-                # Will also need a command to assign a channel as dedicated bot error channel.
-                pass
-
-    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
-
-        if payload.user_id == self.application_id:
-            return
-        
-        # Make sure the server we read the message from is registered under the rection messages dictionary
-        guild = self.get_guild(payload.guild_id)
-        guildReactionMessages = self.reactionMessages.get(str(payload.guild_id), None)
-        if guildReactionMessages is None or guild is None:
-            # Also checks if we're still in the guild and it's cached.
-            return
-        
-        # Make sure that the message the user is reacting to is an event message.
-        eventDict = guildReactionMessages.get(str(payload.message_id), None)
-        if eventDict is None:
-            return
-
-        print("Hello from raw reaction remove")
-        print(f"Reaction:\t{payload.emoji}")
-
-        if eventDict["Type"] == "Role Message":
-            try:
-                role_id = eventDict["Roles"][str(payload.emoji)]
-            except KeyError:
-                # If the emoji isn't the one we care about then exit as well.
-                return
-            print(f"Role ID:\t{role_id}")
-            role = guild.get_role(int(role_id))
-            print(f"Role:\t{role}")
-            if role is None:
-                # Make sure the role still exists and is valid.
-                return
-
-            # The payload for `on_raw_reaction_remove` does not provide `.member`
-            # so we must get the member ourselves from the payload's `.user_id`.
-            print(f"User ID:\t{payload.user_id}")
-            member = guild.get_member(payload.user_id)
-            print(f"Username:\t{member}")
-            if member is None:
-                # Make sure the member still exists and is valid.
-                return
-
-            try:
-                # Finally, remove the role.
-                await member.remove_roles(role)
-            except discord.HTTPException as e:
-                # If we want to do something in case of errors we'd do it here.
-                print("HTTP exception in reaction add callback")
-                print(e)
-                pass
-
-    async def on_member_join(self, member:discord.Member):
-        # Make sure the server we read the message from is registered under the rection messages dictionary
-        guild = member.guild
-        guildWelcomeSettings = self.welcomeSettings.get(str(guild.id), None)
-        if guildWelcomeSettings is None or guild is None:
-            # Also checks if we're still in the guild and it's cached.
-            return
-        if guildWelcomeSettings["Enabled"]:
-            overwrites = {
-                guild.default_role: discord.PermissionOverwrite(read_messages=False, view_channel=False, send_messages=False),
-                member: discord.PermissionOverwrite(read_messages=True, read_message_history=True, view_channel=True, send_messages=True),
-                guild.me: discord.PermissionOverwrite(read_messages=True, read_message_history=True, view_channel=True, send_messages=True)
-            }
-            createdChannel = await guild.create_text_channel(f"welcome-{member.name}", overwrites=overwrites,
-                                                             category=guild.get_channel(int(guildWelcomeSettings["Category"])), 
-                                                             reason=f"Welcome channel for {member.name}")
-            message = f"Hello <@{member.id}>\n\n{guildWelcomeSettings['Message']}"
-            await createdChannel.send(message)
-        else:
-            return
-
 
     async def on_ready(self):
         #await self.tree.sync()
