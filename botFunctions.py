@@ -1,5 +1,6 @@
 import discord
 import json
+from discord import EntityType
 from discord.ext import commands
 
 class MyBotFunctions(commands.Bot):
@@ -139,3 +140,73 @@ class MyBotFunctions(commands.Bot):
             await createdChannel.send(message)
         else:
             return
+    
+    async def on_scheduled_event_create(self, event:discord.ScheduledEvent):
+        print("Hello from scheduled event create")
+        #print(event)
+        #print(event.guild)
+        #print(event.channel)
+        #print(event.entity_type)
+        #print(event.start_time)
+        #print(event.end_time)
+        #print(event.url)
+        if event.entity_type == EntityType.voice:
+            request = {"key": "1234", "type": "event", "action": "create", 
+                       "location_type": "channel", "data": {"name": event.name,
+                                                            "description": event.description,
+                                                            "start_time": event.start_time,
+                                                            "channel_name": event.channel.name,
+                                                            "channel_link": event.channel.jump_url,
+                                                            "url": event.url}}
+        elif event.entity_type == EntityType.external:
+            request = {"key": "1234", "type": "event", "action": "create", 
+                       "location_type": "external", "data": {"name": event.name,
+                                                            "description": event.description,
+                                                            "start_time": event.start_time,
+                                                            "end_time": event.end_time,
+                                                            "location": event.location,
+                                                            "url": event.url}}
+        print(f"Sending request:\n\t{request}")
+
+    async def on_scheduled_event_delete(self, event:discord.ScheduledEvent):
+        print("Hello from scheduled event delete")
+        print(event)
+        if event.entity_type == EntityType.voice:
+            request = {"key": "1234", "type": "event", "action": "delete", 
+                       "location_type": "channel", "data": {"name": event.name,
+                                                            "description": event.description,
+                                                            "start_time": event.start_time,
+                                                            "channel_name": event.channel.name,
+                                                            "channel_link": event.channel.jump_url,
+                                                            "url": event.url}}
+        elif event.entity_type == EntityType.external:
+            request = {"key": "1234", "type": "event", "action": "delete", 
+                       "location_type": "external", "data": {"name": event.name,
+                                                            "description": event.description,
+                                                            "start_time": event.start_time,
+                                                            "end_time": event.end_time,
+                                                            "location": event.location,
+                                                            "url": event.url}}
+        print(f"Sending request:\n\t{request}")
+
+    async def on_scheduled_event_update(self, old_event:discord.ScheduledEvent, event:discord.ScheduledEvent):
+        print("Hello from scheduled event update")
+        print(old_event)
+        print(event)
+        if event.entity_type == EntityType.voice:
+            request = {"key": "1234", "type": "event", "action": "update", 
+                       "location_type": "channel", "data": {"name": event.name,
+                                                            "description": event.description,
+                                                            "start_time": event.start_time,
+                                                            "channel_name": event.channel.name,
+                                                            "channel_link": event.channel.jump_url,
+                                                            "url": event.url}}
+        elif event.entity_type == EntityType.external:
+            request = {"key": "1234", "type": "event", "action": "update", 
+                       "location_type": "external", "data": {"name": event.name,
+                                                            "description": event.description,
+                                                            "start_time": event.start_time,
+                                                            "end_time": event.end_time,
+                                                            "location": event.location,
+                                                            "url": event.url}}
+        print(f"Sending request:\n\t{request}")

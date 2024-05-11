@@ -89,6 +89,7 @@ if __name__ == "__main__":
     intents.messages = True
     intents.guilds = True
     intents.members = True
+    intents.guild_scheduled_events = True
     bot = MyBot(not args.use_main_bot, command_prefix='!', intents=intents)
     #asyncio.run(setup(bot))
     #bot.add_cog(SlashCommandsCog(bot))
