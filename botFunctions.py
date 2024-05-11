@@ -154,7 +154,7 @@ class MyBotFunctions(commands.Bot):
             request = {"key": "1234", "type": "event", "action": "create", 
                        "location_type": "channel", "data": {"name": event.name,
                                                             "description": event.description,
-                                                            "start_time": event.start_time,
+                                                            "start_time": int(event.start_time.timestamp()),
                                                             "channel_name": event.channel.name,
                                                             "channel_link": event.channel.jump_url,
                                                             "url": event.url}}
@@ -162,8 +162,8 @@ class MyBotFunctions(commands.Bot):
             request = {"key": "1234", "type": "event", "action": "create", 
                        "location_type": "external", "data": {"name": event.name,
                                                             "description": event.description,
-                                                            "start_time": event.start_time,
-                                                            "end_time": event.end_time,
+                                                            "start_time": int(event.start_time.timestamp()),
+                                                            "end_time": int(event.end_time.timestamp()),
                                                             "location": event.location,
                                                             "url": event.url}}
         print(f"Sending request:\n\t{request}")
@@ -175,7 +175,7 @@ class MyBotFunctions(commands.Bot):
             request = {"key": "1234", "type": "event", "action": "delete", 
                        "location_type": "channel", "data": {"name": event.name,
                                                             "description": event.description,
-                                                            "start_time": event.start_time,
+                                                            "start_time": int(event.start_time.timestamp()),
                                                             "channel_name": event.channel.name,
                                                             "channel_link": event.channel.jump_url,
                                                             "url": event.url}}
@@ -183,8 +183,8 @@ class MyBotFunctions(commands.Bot):
             request = {"key": "1234", "type": "event", "action": "delete", 
                        "location_type": "external", "data": {"name": event.name,
                                                             "description": event.description,
-                                                            "start_time": event.start_time,
-                                                            "end_time": event.end_time,
+                                                            "start_time": int(event.start_time.timestamp()),
+                                                            "end_time": int(event.end_time.timestamp()),
                                                             "location": event.location,
                                                             "url": event.url}}
         print(f"Sending request:\n\t{request}")
@@ -197,7 +197,7 @@ class MyBotFunctions(commands.Bot):
             request = {"key": "1234", "type": "event", "action": "update", 
                        "location_type": "channel", "data": {"name": event.name,
                                                             "description": event.description,
-                                                            "start_time": event.start_time,
+                                                            "start_time": int(event.start_time.timestamp()),
                                                             "channel_name": event.channel.name,
                                                             "channel_link": event.channel.jump_url,
                                                             "url": event.url}}
@@ -205,8 +205,8 @@ class MyBotFunctions(commands.Bot):
             request = {"key": "1234", "type": "event", "action": "update", 
                        "location_type": "external", "data": {"name": event.name,
                                                             "description": event.description,
-                                                            "start_time": event.start_time,
-                                                            "end_time": event.end_time,
+                                                            "start_time": int(event.start_time.timestamp()),
+                                                            "end_time": int(event.end_time.timestamp()),
                                                             "location": event.location,
                                                             "url": event.url}}
         print(f"Sending request:\n\t{request}")
