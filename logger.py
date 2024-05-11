@@ -7,9 +7,11 @@ class Logger:
         self.terminal = sys.stdout
         self.log = open(logPath, "a", 1)
         self.printDateTime = printDateTime
+        self.lineSkip = True
    
     def write(self, message):
-        if self.printDateTime and message != "\n" and message != "\t":
+        #if self.printDateTime and message != "\n" and message != "\t":
+        if self.printDateTime and self.lineSkip:
             # Source https://www.programiz.com/python-programming/datetime/current-datetime
             # Added a bunch of hardcoded checks of my own
             # datetime object containing current date and time
@@ -18,6 +20,7 @@ class Logger:
             dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
             if not f"[{dt_string}]" in message:
                 message = f"[{dt_string}] " + message
+        self.lineSkip = (message[-1] == "\n")
         self.terminal.write(message)
         self.log.write(message)  
 
