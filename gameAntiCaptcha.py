@@ -9,6 +9,8 @@ from discord import app_commands
 from discord.ext import commands
 from pathlib import Path
 
+# TODO: Put a grid that shows X=0 and Y=0 in case the plot goes into the minus
+# TODO: Not everyone knows what a slope and an intercept is. Explain in embed.
 
 class RegressionView(ui.View):
 
@@ -19,7 +21,7 @@ class RegressionView(ui.View):
         def __init__(self, x, y) -> None:
             super().__init__()
             self.slope = ui.TextInput(label="Estimated slope", style=discord.TextStyle.short, required=True)
-            self.intercept = ui.TextInput(label="Estimated intercept", style=discord.TextStyle.short, required=True)
+            self.intercept = ui.TextInput(label="Estimated Y-intercept", style=discord.TextStyle.short, required=True)
             self.add_item(self.slope)
             self.add_item(self.intercept)
             self.x = x
@@ -75,7 +77,6 @@ class RegressionView(ui.View):
     def __init__(self, x, y):
         super().__init__(timeout=180)
         self.error = False
-        self.confirm = False
         self.modal = self.ClassModal(x, y)
 
     # Source https://stackoverflow.com/a/71693402
@@ -138,8 +139,16 @@ class antiCaptchaCog(commands.GroupCog, name="anti-captcha"):
         plotFilename = f"{self.databaseFolder}/tempPlot{interaction.user.id}.png"
         plot = discord.File(plotFilename, filename=f"tempPlot{interaction.user.id}.png")
         view = RegressionView(x, y)
-        embed = discord.Embed(title="Anti-Captcha", description="Are you a robot? Please prove it!!!")
+        embed = discord.Embed(title="Anti-Captcha", description="Are you a robot? Please prove it!!!\nEstimate the function of the straight line by entering the slope of the line and its Y-intercept.")
         embed.set_image(url=f"attachment://tempPlot{interaction.user.id}.png")
         await interaction.response.send_message(file=plot,embed=embed, view=view, ephemeral=True)
         if os.path.exists(plotFilename):
             os.remove(plotFilename)
+        # Source https://stackoverflow.com/a/71693402
+        timedOut = await view.wait()
+        if timedOut:
+            await interaction.followup.send(f"Command timed out. Message will not be deleted.", ephemeral=True)
+            return
+        elif view.error:
+            await interaction.followup.send(f"An error occured in the interactive element. Check error logs.", ephemeral=True)
+            return
