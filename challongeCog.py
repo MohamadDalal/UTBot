@@ -10,6 +10,8 @@ from time import perf_counter
 from requests.exceptions import HTTPError
 from math import log2
 
+# TODO: Make it so that you use a discord command that updates both challonge and liquipedia at the same time. Because why not?
+
 class ChallongeCog(commands.GroupCog, name="challonge"):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
@@ -23,8 +25,8 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print("Challonge cog attempting to log into Liquipedia")
         login_result = self.liquipedia_API.login()
         print("Attempt results:", login_result)
-        self.liquipedia_pageID = "153516"
-        #self.liquipedia_pageID = "154026"
+        #self.liquipedia_pageID = "153516"
+        self.liquipedia_pageID = "154026"
         self.liquipedia_section = 6
         self.match_mappings = None
         self.last_command_time = perf_counter()
