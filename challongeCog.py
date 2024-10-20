@@ -20,11 +20,11 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         self.tournament_type = ""
         self.liquipedia_API = LiquipediaAPI(testBot=self.bot.isTest)
         self.liquipedia_API.last_command_time -= 5
-        print("Challong cog attempting to log into Liquipedia")
+        print("Challonge cog attempting to log into Liquipedia")
         login_result = self.liquipedia_API.login()
         print("Attempt results:", login_result)
-        #self.liquipedia_pageID = "153516"
-        self.liquipedia_pageID = "154026"
+        self.liquipedia_pageID = "153516"
+        #self.liquipedia_pageID = "154026"
         self.liquipedia_section = 6
         self.match_mappings = None
         self.last_command_time = perf_counter()
@@ -181,18 +181,26 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
                     team1 = self.team_templates.get(self.challonge_participants[m["player1_id"]], self.challonge_participants[m["player1_id"]]).lower()
                     team2 = self.team_templates.get(self.challonge_participants[m["player2_id"]], self.challonge_participants[m["player2_id"]]).lower()
                     state = m["state"]
-                    if state == "complete":
+                    if "-" in m["scores_csv"]:
                         score = m["scores_csv"].split("-")
+                    else:
+                        score = ["0", "0"]
+                    if state == "complete":
+                        #score = m["scores_csv"].split("-")
                         winner = self.team_templates.get(self.challonge_participants[m["winner_id"]], self.challonge_participants[m["winner_id"]])
                     for t2 in match_arg.templates:
                         if re.match("^Match", t2.name):
+                            #if state == "complete":
+                            #if True:
+                            opp1 = "" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
+                            opp2 = "" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
                             if state == "complete":
-                                opp1 = "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
-                                opp2 = "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
                                 t2.set_arg("finished", "true\n\t")
                             else:
-                                opp1 = "" if m["player1_id"] is None else "{{TeamOpponent|" + team1 + "|score=0}}"
-                                opp2 = "" if m["player2_id"] is None else "{{TeamOpponent|" + team2 + "|score=0}}"
+                                t2.set_arg("finished", "false\n\t")
+                            #else:
+                            #    opp1 = "" if m["player1_id"] is None else "{{TeamOpponent|" + team1 + "|score=0}}"
+                            #    opp2 = "" if m["player2_id"] is None else "{{TeamOpponent|" + team2 + "|score=0}}"
                             if t2.has_arg("opponent1"):
                                 t2.set_arg("opponent1", opp1)
                             elif t2.has_arg("opponent1literal"):
