@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 from messageAssets import *
 
-class messageCog(commands.GroupCog, name="message"):
+class MessageCog(commands.GroupCog, name="message"):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         super().__init__()  # this is now required for GroupCog.

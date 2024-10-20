@@ -1,4 +1,8 @@
 {
     "Token": "",
-    "LogPath": ""
+    "LogPath": "logFile.log",
+    "ChallongeUsername": "",
+    "ChallongeKey" : "",
+    "LiquipediaUsername": "",
+    "LiquipediaPassword": ""
 }

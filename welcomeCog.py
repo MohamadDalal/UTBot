@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-class welcomeCog(commands.GroupCog, name="welcome"):
+class WelcomeCog(commands.GroupCog, name="welcome"):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         super().__init__()  # this is now required for GroupCog.
