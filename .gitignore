@@ -6,3 +6,4 @@ tester_settings.json
 reactionMessages.json
 welcomeSettings.json
 *.log
+ignore_*
