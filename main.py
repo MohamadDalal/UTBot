@@ -196,6 +196,7 @@ class MyBot(commands.Bot):
             await self.add_cog(RoleMessage(bot=self))
             await self.add_cog(MessageCog(bot=self))
             #await self.add_cog(welcomeCog(bot=self))
+            await self.add_cog(ChallongeCog(bot=self))
             await self.tree.sync()
 
 
