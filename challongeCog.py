@@ -25,8 +25,10 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print("Challonge cog attempting to log into Liquipedia")
         login_result = self.liquipedia_API.login()
         print("Attempt results:", login_result)
-        #self.liquipedia_pageID = "153516"
-        self.liquipedia_pageID = "154026"
+        #self.liquipedia_pageID = "153516"      # https://liquipedia.net/rocketleague/UTB_Invitational/Oct_2024
+        #self.liquipedia_pageID = "154026"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney
+        #self.liquipedia_pageID = "155193"      # https://liquipedia.net/rocketleague/UTB_Invitational/Dec_2024
+        self.liquipedia_pageID = "155317"       # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
         self.liquipedia_section = 6
         self.match_mappings = None
         self.last_command_time = perf_counter()
@@ -76,6 +78,7 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
             return
         self.challonge_ID = challonge_id
         try:
+            self.challonge_participants = {None: "TBD"}
             for p in challonge.participants.index(self.challonge_ID):
                 self.challonge_participants[p["id"]] = p["name"]
         except HTTPError as e:
@@ -86,7 +89,7 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         await interaction.response.send_message(f"Challonge tournament with ID {self.challonge_ID} and name {self.tournament["name"]} has been assigned for tracking", ephemeral=True)
         self.last_command_time = perf_counter()
         self.get_match_pairings()
-        #print(self.match_mappings)
+        print("Match mappings:",self.match_mappings)
     
     @app_commands.command(name="list-matches", description="List all matches in the assigned Challonge tournament")
     async def list_matches(self, interaction: discord.Interaction):
@@ -194,8 +197,13 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
                         if re.match("^Match", t2.name):
                             #if state == "complete":
                             #if True:
-                            opp1 = "" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
-                            opp2 = "" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
+                            # Challonge flips team in bracker reset. So I hard-coded it to unflip them for Liquipedia
+                            if liquipedia_indicator == "RxMBR":
+                                opp2 = "" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
+                                opp1 = "" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
+                            else:
+                                opp1 = "" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
+                                opp2 = "" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
                             if state == "complete":
                                 t2.set_arg("finished", "true\n\t")
                             else:
@@ -218,7 +226,7 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
                             break
                 break
         #print(parsed_bracket)
-        with open("challongeData/result_bracket.txt", "w") as f:
+        with open("challongeData/ignore_result_bracket.txt", "w") as f:
             f.write(parsed_bracket.__str__())
         self.liquipedia_API.last_command_time -= 5
         edit_result = self.liquipedia_API.edit_page_section(self.liquipedia_pageID, self.liquipedia_section, parsed_bracket.__str__(), "Bot automated bracket sync with challonge bracket.", revID)
@@ -313,7 +321,7 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
             # After testing it looks like challonge does make the matches even though it skips them
             grand_final_no_reset = False # self.tournament["grand_finals_modifier"] == "single match"
             grand_final_skipped = False # self.tournament["grand_finals_modifier"] == "skip"
-            num_participants = len(self.challonge_participants)-1
+            num_participants = len(self.challonge_participants)-1           # -1 for None user assigned by default
             num_rounds = 2*int(log2(num_participants))-1*grand_final_no_reset-2*grand_final_skipped
             num_matches = 2*num_participants-1-1*grand_final_no_reset-1*grand_final_skipped             # Each team can lose twice except winner who can lose once or twice
             num_upper_matches = num_participants+1*(not grand_final_no_reset)-1*grand_final_skipped
@@ -351,7 +359,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
                             #print(num_rounds)
                             match_mappings[challonge_identifiers[j]] = f"R{num_rounds-1}M1"
                             #print(f"{challonge_identifiers[j]}: R{num_rounds-1}M1")
-                            match_mappings[challonge_identifiers[j+1]] = f"R{num_rounds}M1"
+                            # Turns out that the bracket reset is assigned to RxMBR and not R6M1
+                            #match_mappings[challonge_identifiers[j+1]] = f"R{num_rounds}M1"
+                            match_mappings[challonge_identifiers[j+1]] = f"RxMBR"
                             #print(f"{challonge_identifiers[j]}: R{num_rounds-1}M1")
                         break
                     elif upper_round == 1:
