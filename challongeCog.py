@@ -27,9 +27,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print("Attempt results:", login_result)
         #self.liquipedia_pageID = "153516"      # https://liquipedia.net/rocketleague/UTB_Invitational/Oct_2024
         #self.liquipedia_pageID = "154026"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney
-        #self.liquipedia_pageID = "155193"      # https://liquipedia.net/rocketleague/UTB_Invitational/Dec_2024
-        self.liquipedia_pageID = "155317"       # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
-        self.liquipedia_section = 6
+        self.liquipedia_pageID = "155193"      # https://liquipedia.net/rocketleague/UTB_Invitational/Dec_2024
+        #self.liquipedia_pageID = "155317"       # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
+        self.liquipedia_section = 7
         self.match_mappings = None
         self.last_command_time = perf_counter()
         self.last_command_time_large = perf_counter()

@@ -77,7 +77,7 @@ class LiquipediaAPI():
         elif result == "Success":
             return response.json()
         elif not response.ok:
-            {f"error": "Token request failed. Response is {response}"}
+            return {f"error": "Token request failed. Response is {response}"}
         else:
             return {"error": f"Unknown response: {response.json()}"}
 
@@ -101,7 +101,7 @@ class LiquipediaAPI():
         if response.ok:
             return response.json()
         else:
-            {f"error": "Logout request failed. Response is {response}"}
+            return {f"error": "Logout request failed. Response is {response}"}
 
 
 
@@ -109,6 +109,7 @@ class LiquipediaAPI():
         time_since_last = perf_counter() - self.last_command_time
         if time_since_last < self.API_Cooldown_Large:
             return {"error": f"Please wait {self.API_Cooldown_Large-time_since_last:.1f}s before using this command"}
+        print("hello from get_page liquipedia")
         url = self.base_url
         #params = bytes(f"action=query&format=json&prop=info|revisions&rvprop=content&rvslots=main&pageids={pageID}&rvsection={section}", "utf-8")
         params = {"action": "query",
@@ -118,11 +119,12 @@ class LiquipediaAPI():
                   "rvslots": "main",
                   "pageids": pageID}
         response = requests.get(url, params=params, headers=self.headers)
-        self.API_Cooldown_Large = perf_counter()
+        #self.API_Cooldown_Large = perf_counter()
+        self.last_command_time = perf_counter()
         if response.ok:
             return response.json()
         else:
-            {f"error": "Getting Liquipedia page failed. Response is {response}"}
+            return {f"error": "Getting Liquipedia page failed. Response is {response}"}
 
     def get_page_section(self, pageID, section):
         time_since_last = perf_counter() - self.last_command_time
@@ -142,7 +144,7 @@ class LiquipediaAPI():
         if response.ok:
             return response.json()
         else:
-            {f"error": "Getting Liquipedia page section failed. Response is {response}"}
+            return {f"error": "Getting Liquipedia page section failed. Response is {response}"}
 
     def edit_page_section(self, pageID, section, content, summary, baseRevID = None):
         #time_since_last = perf_counter() - self.last_command_time
@@ -169,7 +171,7 @@ class LiquipediaAPI():
         if response.ok:
             return response.json()
         else:
-            {f"error": "Editing Liquipedia page failed. Response is {response}"}
+            return {f"error": "Editing Liquipedia page failed. Response is {response}"}
         #return
     
     def refresh_session(self):
