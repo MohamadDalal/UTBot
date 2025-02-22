@@ -27,9 +27,11 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print("Attempt results:", login_result)
         #self.liquipedia_pageID = "153516"      # https://liquipedia.net/rocketleague/UTB_Invitational/Oct_2024
         #self.liquipedia_pageID = "154026"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney
-        self.liquipedia_pageID = "155193"      # https://liquipedia.net/rocketleague/UTB_Invitational/Dec_2024
-        #self.liquipedia_pageID = "155317"       # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
-        self.liquipedia_section = 7
+        #self.liquipedia_pageID = "155193"      # https://liquipedia.net/rocketleague/UTB_Invitational/Dec_2024
+        #self.liquipedia_pageID = "155317"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
+        self.liquipedia_pageID = "157880"      # https://liquipedia.net/rocketleague/UTB_Invitational/Feb_2025
+        #self.liquipedia_pageID = "158354"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney3
+        self.liquipedia_section = 6
         self.match_mappings = None
         self.last_command_time = perf_counter()
         self.last_command_time_large = perf_counter()
@@ -199,11 +201,11 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
                             #if True:
                             # Challonge flips team in bracker reset. So I hard-coded it to unflip them for Liquipedia
                             if liquipedia_indicator == "RxMBR":
-                                opp2 = "" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
-                                opp1 = "" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
+                                opp2 = "\n\t" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}\n\t"
+                                opp1 = "\n\t" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}\n\t"
                             else:
-                                opp1 = "" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}"
-                                opp2 = "" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}"
+                                opp1 = "\n\t" if team1 == "tbd" else "{{TeamOpponent|" + team1 + "|score=" + score[0] + "}}\n\t"
+                                opp2 = "\n\t" if team2 == "tbd" else "{{TeamOpponent|" + team2 + "|score=" + score[1] + "}}\n\t"
                             if state == "complete":
                                 t2.set_arg("finished", "true\n\t")
                             else:
