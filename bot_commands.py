@@ -6,99 +6,15 @@ class SlashCommandsCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def check_echo(intercation:discord.Interaction):
-        print("Check works")
-        return False
-
-    @app_commands.command(description="Sends a message in the current channel")
-    #@commands.has_permissions(administrator=True)
-    #@commands.check(check_echo)
-    async def send_message(self, interaction: discord.Interaction, message: str):
-        print(f"Hello from send-message, {message}")
-        if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot send message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
-            return
+    @app_commands.command(name="info", description="Get information about the bot")
+    async def get_bot_info(self, interaction: discord.Interaction):
+        print(f"Hello from info, {interaction.user.name}")
         try:
-            channel = interaction.channel
-            await channel.send(message)
-            await interaction.response.send_message("Sent message", ephemeral=True)
+            info_string = "Author: GO_AWAY_77\nVersion: I ain't keeping track\nDescription: Mainly made for the UTB server. Main function is to make life of the mods easier.\nCode: https://github.com/MohamadDalal/UTBot"
+            await interaction.response.send_message(info_string, ephemeral=True)
         except discord.errors.Forbidden as e:
             print(e)
             await interaction.response.send_message(f"I do not have permission. Check error logs", ephemeral=True)
-        except Exception as e:
-            #print(e)
-            await interaction.response.send_message(f"Some other error happened. Check error logs.", ephemeral=True)
-            raise e
-        
-    @app_commands.command(description="Edits a message sent by the bot.")
-    #@commands.has_permissions(administrator=True)
-    #@commands.check(check_echo)
-    async def edit_message(self, interaction: discord.Interaction, message_url:str, new_message: str):
-        print(f"Hello from edit-message, {message_url}, {new_message}")
-        if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot edit message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
-            return
-        urlElements = message_url.split("/")
-        print("Extracted URL elements: ", urlElements)
-        try:
-            urlGuild = self.bot.get_guild(int(urlElements[-3]))
-            channel = self.bot.get_partial_messageable(urlElements[-2])
-            message = await channel.fetch_message(urlElements[-1])
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
-            if interaction.guild != urlGuild:
-                await interaction.response.send_message(f"Cannot edit a message not in this server", ephemeral=True)
-            elif message.author.id != self.bot.application_id:
-                await interaction.response.send_message(f"Cannot edit a message not sent by the bot itself", ephemeral=True)
-            else:
-                await message.edit(content=new_message)
-                await interaction.response.send_message(f"Edited {message_url}", ephemeral=True)
-        except discord.errors.Forbidden as e:
-            print(e)
-            await interaction.response.send_message(f"I have no access to this message", ephemeral=True)
-        except Exception as e:
-            #print(e)
-            await interaction.response.send_message(f"Some other error happened. Check error logs.", ephemeral=True)
-            raise e
-
-    @app_commands.command(description="Deletes a message sent by the bot. CANNOT BE UNDONE")
-    #@commands.has_permissions(administrator=True)
-    #@commands.check(check_echo)
-    async def delete_message(self, interaction: discord.Interaction, message_url:str):
-        print(f"Hello from delete-message, {message_url}")
-        if not interaction.user.guild_permissions.administrator:
-            await interaction.response.send_message(f"Cannot delete message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
-            return
-        urlElements = message_url.split("/")
-        print("Extracted URL elements: ", urlElements)
-        try:
-            urlGuild = self.bot.get_guild(int(urlElements[-3]))
-            channel = self.bot.get_partial_messageable(urlElements[-2])
-            message = await channel.fetch_message(urlElements[-1])
-            print(f"Origin guild:\t{interaction.guild}")
-            print(f"Message guild:\t{urlGuild}")
-            print(f"Message channel:\t{channel}")
-            print(f"Message:\t\t{message}")
-            if interaction.guild != urlGuild:
-                await interaction.response.send_message(f"Cannot delete a message not in this server", ephemeral=True)
-            elif message.author.id != self.bot.application_id:
-                await interaction.response.send_message(f"Cannot delete a message not sent by the bot itself", ephemeral=True)
-            else:
-                if str(interaction.guild_id) not in self.bot.reactionMessages.keys():
-                    print("Delete message: Guild has no reaction messages. No need to update reaction messages dictionary")
-                elif str(message.id) not in self.bot.reactionMessages[str(interaction.guild_id)].keys():
-                    print("Delete message: Message is not a reaciton message. No need to update reaction messages dictionary")
-                else:
-                    print(f"Reaction message entry {urlElements[-1]}:{self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]} has been removed")
-                    del self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]
-                    self.bot.save_reactionMessage()
-                await message.delete()
-                await interaction.response.send_message(f"Deleted {message_url}", ephemeral=True)
-        except discord.errors.Forbidden as e:
-            print(e)
-            await interaction.response.send_message(f"I have no access to this message", ephemeral=True)
         except Exception as e:
             #print(e)
             await interaction.response.send_message(f"Some other error happened. Check error logs.", ephemeral=True)

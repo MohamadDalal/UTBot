@@ -6,7 +6,7 @@ import sys
 import challonge
 #from discord import app_commands
 from discord.ext import commands
-#from bot_commands import SlashCommandsCog
+from bot_commands import SlashCommandsCog
 from roleMessage import RoleMessage
 from messageCog import MessageCog
 from welcomeCog import WelcomeCog
@@ -180,7 +180,7 @@ class MyBot(commands.Bot):
 
     async def setup_hook(self) -> None:
         if self.isTest:
-            #await self.add_cog(SlashCommandsCog(bot), guilds=self.testGuilds)
+            await self.add_cog(SlashCommandsCog(bot), guilds=self.testGuilds)
             await self.add_cog(RoleMessage(bot=self), guilds=self.testGuilds)
             await self.add_cog(MessageCog(bot=self), guilds=self.testGuilds)
             await self.add_cog(WelcomeCog(bot=self), guilds=self.testGuilds)
@@ -188,15 +188,13 @@ class MyBot(commands.Bot):
             for TG in self.testGuilds:
                 self.tree.copy_global_to(guild=TG)
                 await self.tree.sync(guild=TG)
-            #await self.add_cog(SlashCommandsCog(bot))
-            #await self.add_cog(roleMessage(bot))
             #await self.tree.sync()
         else:
-            #await self.add_cog(SlashCommandsCog(bot))
+            await self.add_cog(SlashCommandsCog(bot))
             await self.add_cog(RoleMessage(bot=self))
             await self.add_cog(MessageCog(bot=self))
             #await self.add_cog(welcomeCog(bot=self))
-            await self.add_cog(ChallongeCog(bot=self))
+            #await self.add_cog(ChallongeCog(bot=self))
             await self.tree.sync()
 
 
