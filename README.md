@@ -21,9 +21,9 @@ Current functionalities includes:
 ## Running a test instance of the bot
 1. Copy the settings_template.json and rename it into tester_settings.json
 2. Fill the required tokens, usernames and passwords in settings.json or tester_settings.json
-3. In main.py find serf.testGuilds and add the IDs of the servers you are planning to test the bot in
+3. In main.py find self.testGuilds and add the IDs of the servers you are planning to test the bot in
 4. Activate virtual environment, if not already activated, using ```venv/scripts/activate``` for Windows or ```source venv/bin/activate``` for Linux.
-5. Run the bot with ```python main.py --use-main-bot```
+5. Run the bot with ```python main.py```
 
 ## Enabling and disabling functionalities
 If you do not want to use all the commands that come with the bot, then you can enable and disable certain functionalities by finding the setup_hook function in main.py and commenting out the commands that you do not want.
