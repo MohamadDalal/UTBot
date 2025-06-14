@@ -31,8 +31,10 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         #self.liquipedia_pageID = "155317"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
         #self.liquipedia_pageID = "157880"      # https://liquipedia.net/rocketleague/UTB_Invitational/Feb_2025
         #self.liquipedia_pageID = "158354"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney3
-        self.liquipedia_pageID = "159564"      # https://liquipedia.net/rocketleague/User:GO_AWAY_77/test_tourney4
+        #self.liquipedia_pageID = "159564"      # https://liquipedia.net/rocketleague/User:GO_AWAY_77/test_tourney4
         #self.liquipedia_pageID = "159223"      # https://liquipedia.net/rocketleague/UTB_Invitational/Apr_2025
+        #self.liquipedia_pageID = "161574"       # https://liquipedia.net/rocketleague/UTB_Invitational/Jun_2025
+        self.liquipedia_pageID = "162094"       # https://liquipedia.net/rocketleague/User:GO_AWAY_77/test_tourney5
         self.liquipedia_section = 6
         self.match_mappings = None
         self.last_command_time = perf_counter()
@@ -338,12 +340,15 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
             for i in range(num_matches):
                 base = 1
                 letter_indices = []
-                while (i+1)//base > 0:
-                    letter_indices.insert(0,(i//base) % 26)
-                    base *= 26
+                if i==0:
+                    letter_indices.insert(0, 0)
+                else:
+                    while i//base > 0:
+                        letter_indices.insert(0,(i//base) % 26)
+                        base *= 26
                 letter = ""
-                for j in letter_indices:
-                    letter += chr(65+j)
+                for n, j in enumerate(letter_indices):
+                    letter += chr(65+j-(n==0 and len(letter_indices)>1))
                 challonge_identifiers[i] += letter
             match_mappings = {}
             upper_round = 1
