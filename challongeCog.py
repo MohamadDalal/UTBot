@@ -29,8 +29,10 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         #self.liquipedia_pageID = "154026"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney
         #self.liquipedia_pageID = "155193"      # https://liquipedia.net/rocketleague/UTB_Invitational/Dec_2024
         #self.liquipedia_pageID = "155317"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney2
-        self.liquipedia_pageID = "157880"      # https://liquipedia.net/rocketleague/UTB_Invitational/Feb_2025
+        #self.liquipedia_pageID = "157880"      # https://liquipedia.net/rocketleague/UTB_Invitational/Feb_2025
         #self.liquipedia_pageID = "158354"      # https://liquipedia.net/rocketleague/index.php?title=User:GO_AWAY_77/test_tourney3
+        self.liquipedia_pageID = "159564"      # https://liquipedia.net/rocketleague/User:GO_AWAY_77/test_tourney4
+        #self.liquipedia_pageID = "159223"      # https://liquipedia.net/rocketleague/UTB_Invitational/Apr_2025
         self.liquipedia_section = 6
         self.match_mappings = None
         self.last_command_time = perf_counter()
@@ -40,8 +42,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         with open("challongeData/team_templates.json", "r") as f:
             self.team_templates = json.load(f)
         self.allowed_users = [310153696044515349, # go_away_77
-                              457141417014460416, # headstart96
-                              349879697330536448] # longey
+                              #457141417014460416, # headstart96
+                              349879697330536448, # longey
+                              405653221604851732] # Kuro
     
     """
     Needed commands:
