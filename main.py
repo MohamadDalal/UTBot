@@ -194,7 +194,7 @@ class MyBot(commands.Bot):
             await self.add_cog(RoleMessage(bot=self))
             await self.add_cog(MessageCog(bot=self))
             #await self.add_cog(welcomeCog(bot=self))
-            #await self.add_cog(ChallongeCog(bot=self))
+            await self.add_cog(ChallongeCog(bot=self))
             await self.tree.sync()
 
 
@@ -216,7 +216,11 @@ if __name__ == "__main__":
     print()
     print("----------------------------New Session----------------------------")
     logger.setPrintDateTime(True)
-    challonge.set_credentials(settings["ChallongeUsername"], settings["ChallongeKey"])
+    if args.use_main_bot:
+        challonge.set_credentials(settings["ChallongeUsername"], settings["ChallongeKey"])
+    else:
+        challonge.set_credentials(settings["OldChallongeUsername"], settings["OldChallongeKey"])
+
     
     print(getattr(discord.User, '__origin__', None))
     intents = discord.Intents.default()
