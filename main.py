@@ -11,6 +11,7 @@ from roleMessage import RoleMessage
 from messageCog import MessageCog
 from welcomeCog import WelcomeCog
 from challongeCog import ChallongeCog
+from tryoutCog import TryoutCog
 from logger import Logger
 
 """
@@ -185,6 +186,7 @@ class MyBot(commands.Bot):
             await self.add_cog(MessageCog(bot=self), guilds=self.testGuilds)
             await self.add_cog(WelcomeCog(bot=self), guilds=self.testGuilds)
             await self.add_cog(ChallongeCog(bot=self), guilds=self.testGuilds)
+            await self.add_cog(TryoutCog(bot=self), guilds=self.testGuilds)
             for TG in self.testGuilds:
                 self.tree.copy_global_to(guild=TG)
                 await self.tree.sync(guild=TG)
