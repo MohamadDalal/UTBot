@@ -16,7 +16,7 @@ class MessageCog(commands.GroupCog, name="message"):
 
     @app_commands.command(name="send", description="Sends a message in the current channel")
     async def send_message(self, interaction: discord.Interaction):
-        print(f"Hello from send-message")
+        print(f"Hello from send-message, {interaction.user.name}")
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(f"Cannot send message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
@@ -37,7 +37,7 @@ class MessageCog(commands.GroupCog, name="message"):
     @app_commands.command(name="edit", description="Edits a message sent by the bot.")
     @app_commands.describe(message_url="The link to the message")
     async def edit_message(self, interaction: discord.Interaction, message_url:str):
-        print(f"Hello from edit-message, {message_url}")
+        print(f"Hello from edit-message, {interaction.user.name}, {message_url}")
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(f"Cannot edit message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return
@@ -68,7 +68,7 @@ class MessageCog(commands.GroupCog, name="message"):
     @app_commands.command(name="delete", description="Deletes a message sent by the bot. CANNOT BE UNDONE")
     @app_commands.describe(message_url="The link to the message")
     async def delete_message(self, interaction: discord.Interaction, message_url:str):
-        print(f"Hello from delete-message, {message_url}")
+        print(f"Hello from delete-message, {interaction.user.name}, {message_url}")
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(f"Cannot delete message. User <@{interaction.user.id}> is not adminstrator.", ephemeral=True)
             return

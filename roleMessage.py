@@ -17,7 +17,7 @@ class RoleMessage(commands.GroupCog, name="roles"):
     @app_commands.describe(message_url="The link to the message")
     #@commands.has_guild_permissions(manage_roles=True, ban_members=True, administrator=True) # Check not working
     async def assign_message(self, interaction: discord.Interaction, message_url:str) -> None:
-        print(f"Hello from assign-message, {message_url}")
+        print(f"Hello from assign-messagem {interaction.user.name}, {message_url}")
         # https://stackoverflow.com/a/48613050 source for this if statement
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot assign message as role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
@@ -64,7 +64,7 @@ class RoleMessage(commands.GroupCog, name="roles"):
     @app_commands.describe(message_url="The link to the message")
     @app_commands.describe(confirm="Choose True to confirm your choice. Here to avoid accidents")
     async def unassign_message(self, interaction: discord.Interaction, message_url:str, confirm:bool = False) -> None:
-        print(f"Hello from unassign-message, {message_url}, {confirm}")
+        print(f"Hello from unassign-message, {interaction.user.name}, {message_url}, {confirm}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot unassign message from being a role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
@@ -106,9 +106,9 @@ class RoleMessage(commands.GroupCog, name="roles"):
     @app_commands.command(name="add-role", description="Make a reaction assign a role on a message.")
     @app_commands.describe(message_url="The link to the message")
     @app_commands.describe(reaction="The reaction to assign a role to")
-    @app_commands.describe(role_id="The ID of the role to be assigned")
-    async def add_role(self, interaction: discord.Interaction, message_url:str, reaction:str, role_id:str) -> None:
-        print(f"Hello from add-role, {message_url}, {reaction}, {role_id}")
+    @app_commands.describe(role="The role to be assigned")
+    async def add_role(self, interaction: discord.Interaction, message_url:str, reaction:str, role:discord.Role) -> None:
+        print(f"Hello from add-role,, {interaction.user.name} {message_url}, {reaction}, {role.name}, {role.id}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot add role to a role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
@@ -133,10 +133,10 @@ class RoleMessage(commands.GroupCog, name="roles"):
                 await interaction.response.send_message(f"Message {message_url} is assigned as a {self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]['Type']}. You need to unassign at and then reassign it as a role message.", ephemeral=True)
             else:
                 # Check if role_ID is made of numbers only (Valid role ID) later
-                self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Roles"][reaction] = role_id
+                self.bot.reactionMessages[str(interaction.guild_id)][str(message.id)]["Roles"][reaction] = role.id
                 self.bot.save_reactionMessage()
                 await message.add_reaction(reaction)
-                await interaction.response.send_message(f"Assigning {reaction} to the role <@&{role_id}> on message {message_url}", ephemeral=True)
+                await interaction.response.send_message(f"Assigning {reaction} to the role <@&{role.id}> on message {message_url}", ephemeral=True)
         except discord.errors.Forbidden as e:
             print(e)
             await interaction.response.send_message(f"I have no access to this message {message_url}", ephemeral=True)
@@ -149,7 +149,7 @@ class RoleMessage(commands.GroupCog, name="roles"):
     @app_commands.describe(message_url="The link to the message")
     @app_commands.describe(reaction="The reaction to remove assignment from")
     async def remove_role(self, interaction: discord.Interaction, message_url:str, reaction:str) -> None:
-        print(f"Hello from remove-role, {message_url}, {reaction}")
+        print(f"Hello from remove-role, {interaction.user.name}, {message_url}, {reaction}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot remove role reaction as role message. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
@@ -192,7 +192,7 @@ class RoleMessage(commands.GroupCog, name="roles"):
     
     @app_commands.command(name="list-messages", description="List all messages assigned as role reaction messages in this server")
     async def list_messages(self, interaction: discord.Interaction) -> None:
-        print(f"Hello from list-messages")
+        print(f"Hello from list-messages, {interaction.user.name}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot list role reaction messages. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
@@ -218,7 +218,7 @@ class RoleMessage(commands.GroupCog, name="roles"):
 
     @app_commands.command(name="list-roles", description="List all messages assigned as role reaction messages in this server")
     async def list_roles(self, interaction: discord.Interaction, message_url:str) -> None:
-        print(f"Hello from list-roles, {message_url}")
+        print(f"Hello from list-roles, {interaction.user.name}, {message_url}")
         #if not interaction.user.guild_permissions.manage_roles:
         #    await interaction.response.send_message(f"Cannot list role reaction messages. User <@{interaction.user.id}> does not have permission to manage roles.", ephemeral=True)
         #    return
