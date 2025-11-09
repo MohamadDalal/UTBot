@@ -52,6 +52,7 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         self.API_Cooldown_Large = 20
         with open("challongeData/team_templates.json", "r") as f:
             self.team_templates = json.load(f)
+        self.allowed_guilds = [529748388347117578] # Main UTB Server
         self.allowed_users = [310153696044515349, # go_away_77
                               349879697330536448, # longey
                               405653221604851732] # Kuro
@@ -70,6 +71,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
             return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
+            return
         time_since_last = perf_counter() - self.last_command_time
         if time_since_last < self.API_Cooldown:
             await interaction.response.send_message(f"Please wait {self.API_Cooldown-time_since_last:.1f}s before using this command again", ephemeral=True)
@@ -86,6 +90,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print(f"Hello from assign-challonge-tourney, {challonge_id}, {interaction.user.name}")
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
+            return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
             return
         time_since_last = perf_counter() - self.last_command_time
         if time_since_last < self.API_Cooldown:
@@ -137,8 +144,8 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
             return
-        if not interaction.user.id in self.allowed_users:
-            await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
             return
         if self.challonge_ID is None:
             await interaction.response.send_message("No Challonge tournament has been assigned for tracking yet", ephemeral=True)
@@ -348,6 +355,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
             return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
+            return
         if self.challonge_ID is None:
             await interaction.response.send_message("No Challonge tournament has been assigned for tracking yet", ephemeral=True)
             return
@@ -397,6 +407,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
             return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
+            return
         result = self.liquipedia_API.login()
         #if "error" in result.keys():
         if result.get("error", None) is not None:
@@ -409,6 +422,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print(f"Hello from liquipedia-logout, {interaction.user.name}")
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
+            return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
             return
         result = self.liquipedia_API.logout()
         #if "error" in result.keys():
@@ -424,6 +440,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
             return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
+            return
         self.team_templates[challonge_name] = liquipedia_template.lower()
         with open("challongeData/team_templates.json", "w") as f:
             json.dump(self.team_templates, f, indent=2)
@@ -434,6 +453,9 @@ class ChallongeCog(commands.GroupCog, name="challonge"):
         print(f"Hello from find-team-template, {challonge_name}, {liquipedia_template}, {interaction.user.name}")
         if not interaction.user.id in self.allowed_users:
             await interaction.response.send_message("You do not have permission to use this command", ephemeral=True)
+            return
+        if not interaction.guild_id in self.allowed_guilds:
+            await interaction.response.send_message("This command can only be used in select servers. This is not one of them", ephemeral=True)
             return
         if challonge_name is None and liquipedia_template is None:
             return_message = "{\n"
